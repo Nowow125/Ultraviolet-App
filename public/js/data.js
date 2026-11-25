@@ -1,7 +1,6 @@
 "use strict";
 /**
- * Nova catalog data — games, app shortcuts, cloak presets, search engines.
- * Game embeds point at publisher-provided embed players that allow iframe use.
+ * Nova catalog data — games, apps, music, chat, forums, cloak presets, engines.
  */
 window.NovaData = {
 	searchEngines: {
@@ -414,6 +413,33 @@ window.NovaData = {
 	],
 	apps: [
 		{
+			id: "geforcenow",
+			name: "GeForce NOW",
+			icon: "",
+			letter: "G",
+			color: "#76b900",
+			url: "https://play.geforcenow.com",
+			cat: "games",
+		},
+		{
+			id: "nowgg",
+			name: "now.gg",
+			icon: "",
+			letter: "N",
+			color: "#7c3aed",
+			url: "https://now.gg",
+			cat: "games",
+		},
+		{
+			id: "xcloud",
+			name: "Xbox Cloud",
+			icon: "",
+			letter: "X",
+			color: "#22c55e",
+			url: "https://www.xbox.com/play",
+			cat: "games",
+		},
+		{
 			id: "crazygames",
 			name: "CrazyGames",
 			icon: "",
@@ -568,5 +594,272 @@ window.NovaData = {
 			url: "https://mail.google.com",
 			cat: "school",
 		},
+	],
+
+	/* ---------- music ---------- */
+	radioStations: [
+		{
+			id: "lofi-study",
+			name: "lofi hip hop radio",
+			sub: "beats to relax / study to · 24/7",
+			color: "#8b5cf6",
+			video: "jfKfPfyJRdk",
+			watch: "https://www.youtube.com/watch?v=jfKfPfyJRdk",
+		},
+		{
+			id: "synthwave",
+			name: "synthwave radio",
+			sub: "beats to chill / game to · 24/7",
+			color: "#22d3ee",
+			video: "4xDzrJK8OOQ",
+			watch: "https://www.youtube.com/watch?v=4xDzrJK8OOQ",
+		},
+		{
+			id: "lofi-sleep",
+			name: "lofi sleep radio",
+			sub: "beats to sleep / chill to · 24/7",
+			color: "#34d399",
+			video: "rUxyKA_-grg",
+			watch: "https://www.youtube.com/watch?v=rUxyKA_-grg",
+		},
+	],
+	musicLinks: [
+		{
+			name: "Spotify",
+			icon: "/assets/icons/spotify.svg",
+			url: "https://open.spotify.com",
+		},
+		{
+			name: "YouTube Music",
+			icon: "/assets/icons/youtube.svg",
+			url: "https://music.youtube.com",
+		},
+		{
+			name: "SoundCloud",
+			icon: "",
+			letter: "S",
+			color: "#ff5500",
+			url: "https://soundcloud.com",
+		},
+		{
+			name: "Pandora",
+			icon: "",
+			letter: "P",
+			color: "#3668ff",
+			url: "https://www.pandora.com",
+		},
+	],
+
+	/* ---------- chat ---------- */
+	chatRooms: [
+		{
+			id: "lounge",
+			name: "lounge",
+			desc: "Hang out and talk about anything",
+			emoji: "🛋️",
+		},
+		{
+			id: "games",
+			name: "games",
+			desc: "What are you playing right now?",
+			emoji: "🎮",
+		},
+		{
+			id: "music",
+			name: "music",
+			desc: "Share what you're listening to",
+			emoji: "🎧",
+		},
+		{
+			id: "help",
+			name: "help",
+			desc: "Questions about Nova and the proxy",
+			emoji: "🛟",
+		},
+	],
+	bots: [
+		{
+			id: "nova",
+			name: "NovaBot",
+			emoji: "🤖",
+			color: "#8b5cf6",
+			greetings: [
+				"hey {name}! welcome to the lounge ✨",
+				"yo {name}! what's up?",
+				"hi {name}, good to see you around",
+			],
+			generic: [
+				"real talk — have you tried Smash Karts yet?",
+				"if the proxy ever feels slow, switching the search engine in Settings sometimes helps",
+				"pro tip: the panic key is a lifesaver. set it in Settings ⚡",
+				"i'm just a local bot, but i never sleep 🤖",
+				"hot take: Bloxd.io parkour is the best warmup game",
+				"tables turn, bridges burn, but the wisp tunnel stays up 🔥",
+				"someone should start a tournament thread in the forums",
+				"did you know you can open sites in an about:blank window? stealth mode on",
+			],
+			question: [
+				"good question — the AI tab can actually answer that better than me",
+				"hmm, ask me in the help room and someone might know",
+				"i'd check the forums — lots of smart people there",
+			],
+			game: [
+				"ooo gaming hours 🎮",
+				"drop the game name and i'll tell you if it slaps",
+				"leaderboard when?",
+			],
+			music: [
+				"the synthwave radio station is elite 🎧",
+				"lofi beats and gaming, name a better duo",
+			],
+		},
+		{
+			id: "pixel",
+			name: "Pixel",
+			emoji: "👾",
+			color: "#22d3ee",
+			greetings: ["hey hey {name} 👾", "sup {name}! ready to play something?"],
+			generic: [
+				"just cleared 20 rounds in Slice Master, no big deal 😎",
+				"anyone up for 2-player Basket Random? it's chaos",
+				"the beat maker in the Music tab goes hard, made a whole track",
+				"WorldGuessr dropped me in the middle of nowhere, guessed Iceland, was Australia 💀",
+				"reminder: favorites star keeps your games one tap away ⭐",
+			],
+			question: [
+				"honestly? ask NovaBot or the AI tab, they're smarter than me",
+				"no clue, but that's what the forums are for",
+			],
+			game: [
+				"which game? i'll join",
+				"games room is this way 👉",
+				"say less, loading it up now",
+			],
+			music: [
+				"radio's on, volume's up 🎶",
+				"put on the lofi station and thank me later",
+			],
+		},
+		{
+			id: "sage",
+			name: "Sage",
+			emoji: "🦉",
+			color: "#34d399",
+			greetings: [
+				"welcome, {name}. the lounge is open 🦉",
+				"ah, {name} returns. good.",
+			],
+			generic: [
+				"wisdom of the day: save your homework in a Google Doc tab. perfect camouflage.",
+				"the forums have a guide on tab cloaking — worth a read",
+				"remember to hydrate between rounds 💧",
+				"a clean tab bar is a clean mind. close what you don't use.",
+				"in case of emergency: panic key. every home should have one.",
+			],
+			question: [
+				"an excellent question. i suggest asking the AI tab — it is well read.",
+				"the answer lies within… probably in the help room",
+			],
+			game: [
+				"games sharpen the mind, but a timer keeps the grades",
+				"one more round, then homework. balance.",
+			],
+			music: [
+				"music makes the tunnel bearable 🎼",
+				"quiet lofi is the soundtrack of productivity",
+			],
+		},
+	],
+	forumCategories: [
+		{
+			id: "announcements",
+			name: "Announcements",
+			desc: "News from the Nova team",
+			emoji: "📣",
+		},
+		{
+			id: "games",
+			name: "Games",
+			desc: "Reviews, records and recommendations",
+			emoji: "🎮",
+		},
+		{
+			id: "help",
+			name: "Help & Support",
+			desc: "Proxy issues, fixes and tips",
+			emoji: "🛟",
+		},
+		{
+			id: "creative",
+			name: "Creative Corner",
+			desc: "Beat maker tracks, art, stories",
+			emoji: "🎨",
+		},
+		{
+			id: "offtopic",
+			name: "Off Topic",
+			desc: "Anything and everything",
+			emoji: "💬",
+		},
+	],
+	forumSeed: [
+		{
+			cat: "announcements",
+			title: "Welcome to the Nova community 🎉",
+			author: { name: "NovaBot", emoji: "🤖", color: "#8b5cf6", bot: true },
+			pinned: true,
+			body: "Welcome aboard! This forum lives right in your browser — threads and replies are stored on your device and sync across your open tabs.\n\nQuick starts:\n• Star games you love so they show in Favorites\n• Set a tab cloak and panic key in Settings\n• Ask the AI tab anything, or hit the beat maker in Music\n\nBe kind, have fun, and game on. 🚀",
+		},
+		{
+			cat: "games",
+			title: "What's everyone playing this week?",
+			author: { name: "Pixel", emoji: "👾", color: "#22d3ee", bot: true },
+			body: "I've been rotating between Smash Karts and Bloxd.io parkour. Kour.io when I want to sweat. What's in your rotation?",
+		},
+		{
+			cat: "help",
+			title: "Proxy basics — why a game might not load",
+			author: { name: "Sage", emoji: "🦉", color: "#34d399", bot: true },
+			pinned: true,
+			body: "Three things to try first:\n1. Reload the page — the service worker needs a moment on first launch\n2. If an embedded game stays black, open the game's site through the home search instead\n3. Still stuck? Post below with what you see and we'll help",
+		},
+		{
+			cat: "creative",
+			title: "Made my first lofi beat in the built-in studio 🎧",
+			author: { name: "Pixel", emoji: "👾", color: "#22d3ee", bot: true },
+			body: "The step sequencer in the Music tab is seriously fun. Lo-fi preset, slowed the BPM to 72, added a lazy bassline. Drop your patterns below!",
+		},
+		{
+			cat: "offtopic",
+			title: "Best tab cloak combo?",
+			author: { name: "NovaBot", emoji: "🤖", color: "#8b5cf6", bot: true },
+			body: "Classroom + panic key = elite. Docs icon for the writers. Google Drive for the organizers. What's your loadout?",
+		},
+	],
+	avatarEmojis: [
+		"🚀",
+		"👾",
+		"🎧",
+		"🐸",
+		"🦊",
+		"🐼",
+		"🤖",
+		"👻",
+		"🎮",
+		"⚡",
+		"🌙",
+		"🔥",
+		"🍕",
+		"🧢",
+		"💀",
+		"🌟",
+	],
+	avatarGradients: [
+		"#8b5cf6,#22d3ee",
+		"#fb7185,#f59e0b",
+		"#34d399,#22d3ee",
+		"#fbbf24,#fb7185",
+		"#60a5fa,#a78bfa",
+		"#f472b6,#8b5cf6",
 	],
 };

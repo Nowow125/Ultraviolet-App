@@ -3,7 +3,7 @@
  * jsdom-based smoke tests for Nova pages.
  * Runs the real page scripts against the real markup with stubbed vendors.
  */
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import { readFileSync } from "node:fs";
 
 const BASE = "http://localhost:8080";
@@ -25,12 +25,19 @@ function loadPage(path, { runScripts = true } = {}) {
 		new URL(`../public${path}`, import.meta.url),
 		"utf8"
 	);
+	const vc = new VirtualConsole();
 	const dom = new JSDOM(html, {
 		url: BASE + path,
 		runScripts: runScripts ? "outside-only" : undefined,
 		pretendToBeVisual: true,
+		virtualConsole: vc,
 	});
 	const { window } = dom;
+	window.__nav = [];
+	vc.on("jsdomError", (e) => {
+		if (String(e.message).includes("navigation to another Document"))
+			window.__nav.push(String(e.message));
+	});
 	// stub vendors & browser APIs the pages expect
 	window.BareMux = {
 		BareMuxConnection: class {
@@ -265,6 +272,7 @@ console.log("\n[player /player.html]");
 	run(dom, "/js/shared.js");
 	run(dom, "/js/app.js");
 	run(dom, "/js/player.js");
+	const doc = window.document;
 	check(
 		"no script errors",
 		window.__errors.length === 0,
@@ -272,20 +280,76 @@ console.log("\n[player /player.html]");
 	);
 	check(
 		"title shows content name",
-		window.document.getElementById("pl-title").textContent === "Example"
+		doc.getElementById("pl-title").textContent === "Example"
 	);
 	await tick();
-	const frame = window.document.getElementById("pl-frame");
+	const frames = doc.querySelectorAll("#frames iframe");
+	check("first tab created", frames.length === 1, "count=" + frames.length);
 	check(
 		"frame src uses /p/ prefix",
-		frame.getAttribute("src") === "/p/enc(https://example.com/)",
-		frame.getAttribute("src")
+		frames[0].getAttribute("src") === "/p/enc(https://example.com/)",
+		frames[0].getAttribute("src")
 	);
-	// simulate load event
-	frame.dispatchEvent(new window.Event("load"));
+	check(
+		"tab bar shows one tab",
+		doc.querySelectorAll("#tabs-list .ptab").length === 1
+	);
+	check(
+		"tab bar shows tab title",
+		doc.querySelector("#tabs-list .ptab .t").textContent === "Example"
+	);
+
+	// simulate load
+	frames[0].dispatchEvent(new window.Event("load"));
 	check(
 		"loading screen hides on frame load",
-		window.document.getElementById("pl-loading").style.display === "none"
+		doc.getElementById("pl-loading").style.display === "none"
+	);
+
+	// add a second tab through the form
+	doc.getElementById("tab-add-input").value = "https://wikipedia.org";
+	doc
+		.getElementById("tab-add-form")
+		.dispatchEvent(
+			new window.Event("submit", { bubbles: true, cancelable: true })
+		);
+	await tick();
+	check(
+		"second tab created",
+		doc.querySelectorAll("#frames iframe").length === 2
+	);
+	check(
+		"tab bar shows two tabs",
+		doc.querySelectorAll("#tabs-list .ptab").length === 2
+	);
+	check(
+		"second tab becomes active",
+		doc.querySelectorAll("#tabs-list .ptab")[1].classList.contains("active")
+	);
+	check(
+		"title updates to new tab",
+		doc.getElementById("pl-title").textContent === "wikipedia.org"
+	);
+
+	// switch back to tab 1
+	doc
+		.querySelectorAll("#tabs-list .ptab")[0]
+		.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+	check(
+		"switch back to tab 1",
+		doc.querySelectorAll("#tabs-list .ptab")[0].classList.contains("active") &&
+			doc.getElementById("pl-title").textContent === "Example"
+	);
+
+	// close tab 1 -> tab 2 becomes active
+	doc
+		.querySelector("#tabs-list .ptab .ptab-close")
+		.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+	await tick();
+	check("tab closes", doc.querySelectorAll("#frames iframe").length === 1);
+	check(
+		"remaining tab active",
+		doc.querySelectorAll("#tabs-list .ptab")[0].classList.contains("active")
 	);
 }
 
@@ -422,7 +486,6 @@ console.log("\n[panic redirection]");
 	run(dom, "/js/shared.js");
 	run(dom, "/js/app.js");
 	run(dom, "/js/index.js");
-	const captured = captureNavigation(window);
 	window.dispatchEvent(
 		new window.KeyboardEvent("keydown", {
 			key: "`",
@@ -430,16 +493,476 @@ console.log("\n[panic redirection]");
 			bubbles: true,
 		})
 	);
-	if (!captured.patched) {
-		console.log("  - skipped: jsdom Location cannot be patched");
-		passed++; // count as neutral
-	} else {
-		check(
-			"panic replaces location with safe url",
-			captured.replace === "https://classroom.google.com",
-			String(captured.replace)
+	check(
+		"panic navigates to safe url",
+		window.__nav.length === 1,
+		"nav events=" + window.__nav.length
+	);
+}
+
+/* ---------------- topbar + profile ---------------- */
+console.log("\n[topbar + profiles]");
+{
+	const dom = loadPage("/games.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	run(dom, "/js/games.js");
+	const doc = window.document;
+	check(
+		"topbar renders 8 nav links",
+		doc.querySelectorAll("header.topbar .nav a").length === 8
+	);
+	check(
+		"games pill is active",
+		doc.querySelector("header.topbar .nav a.active")?.getAttribute("href") ===
+			"/games.html"
+	);
+	check(
+		"profile chip shows Guest",
+		doc.getElementById("profile-chip").textContent.includes("Guest")
+	);
+	doc.getElementById("profile-chip").click();
+	check(
+		"profile menu opens",
+		doc.getElementById("profile-menu").style.display !== "none"
+	);
+	check(
+		"menu shows create-profile for guest",
+		!!doc.getElementById("menu-signin")
+	);
+
+	// welcome modal on home
+	const dom2 = loadPage("/index.html");
+	run(dom2, "/js/data.js");
+	run(dom2, "/js/shared.js");
+	run(dom2, "/js/app.js");
+	run(dom2, "/js/index.js");
+	const doc2 = dom2.window.document;
+	const overlay = doc2.querySelector(".modal-overlay");
+	check("welcome modal appears for first visit", !!overlay);
+	overlay.querySelector("#w-name").value = "TestUser";
+	overlay.querySelector("#w-save").click();
+	const prof = JSON.parse(dom2.window.localStorage.getItem("nova:profile"));
+	check(
+		"welcome modal creates profile",
+		prof.name === "TestUser" && !prof.guest
+	);
+	check(
+		"welcome modal removed after save",
+		!doc2.querySelector(".modal-overlay")
+	);
+	check(
+		"topbar shows new profile name",
+		doc2.getElementById("profile-chip").textContent.includes("TestUser")
+	);
+}
+
+/* ---------------- music page ---------------- */
+console.log("\n[music /music.html]");
+{
+	const dom = loadPage("/music.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	run(dom, "/js/music.js");
+	const doc = window.document;
+	check(
+		"no script errors",
+		window.__errors.length === 0,
+		JSON.stringify(window.__errors)
+	);
+	check(
+		"3 radio stations",
+		doc.querySelectorAll("#station-grid .station-card").length === 3
+	);
+	check(
+		"streaming shortcuts render",
+		doc.querySelectorAll("#music-links .app-tile").length === 4
+	);
+	check(
+		"6 sequencer rows × 16 steps",
+		doc.querySelectorAll("#seq-grid .step").length === 96
+	);
+	check(
+		"lofi preset loaded by default",
+		doc.querySelectorAll('#seq-grid .step[data-row="kick"].on').length === 3
+	);
+
+	// toggle a step
+	const step = doc.querySelector(
+		'#seq-grid .step[data-row="kick"][data-step="1"]'
+	);
+	step.click();
+	check("step toggles on", step.classList.contains("on"));
+	step.click();
+	check("step toggles off", !step.classList.contains("on"));
+
+	// bpm
+	doc.getElementById("beat-bpm").value = "120";
+	doc
+		.getElementById("beat-bpm")
+		.dispatchEvent(new window.Event("input", { bubbles: true }));
+	check(
+		"bpm updates display",
+		doc.getElementById("beat-bpm-val").textContent === "120"
+	);
+
+	// house preset
+	doc.querySelector('[data-preset="house"]').click();
+	check(
+		"house preset loads 4 kicks",
+		doc.querySelectorAll('#seq-grid .step[data-row="kick"].on').length === 4
+	);
+	// clear
+	doc.getElementById("beat-clear").click();
+	check(
+		"clear empties grid",
+		doc.querySelectorAll("#seq-grid .step.on").length === 0
+	);
+	// randomize keeps at least a kick + snare
+	doc.getElementById("beat-random").click();
+	check(
+		"randomize fills kick+snare",
+		doc.querySelectorAll('#seq-grid .step[data-row="kick"].on').length >= 1 &&
+			doc.querySelectorAll('#seq-grid .step[data-row="snare"].on').length >= 1
+	);
+}
+
+/* ---------------- chat page ---------------- */
+console.log("\n[chat /chat.html]");
+{
+	const dom = loadPage("/chat.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	run(dom, "/js/chat.js");
+	const doc = window.document;
+	check(
+		"no script errors",
+		window.__errors.length === 0,
+		JSON.stringify(window.__errors)
+	);
+	check(
+		"4 rooms render",
+		doc.querySelectorAll("#room-list .room-item").length === 4
+	);
+	check(
+		"lounge is active by default",
+		doc
+			.querySelector("#room-list .room-item.active")
+			.textContent.includes("lounge")
+	);
+
+	// send a message
+	doc.getElementById("chat-input").value = "hello everyone!";
+	doc.getElementById("chat-send").click();
+	const stored = JSON.parse(
+		dom.window.localStorage.getItem("nova:chat-lounge")
+	);
+	check(
+		"message stored",
+		stored.length === 1 && stored[0].text === "hello everyone!"
+	);
+	check(
+		"message rendered",
+		doc.getElementById("messages").textContent.includes("hello everyone!")
+	);
+	const prof = JSON.parse(dom.window.localStorage.getItem("nova:profile"));
+	check("msgs stat bumped", prof.stats.msgs === 1);
+
+	// a bot always replies to the first message
+	await tick(6500);
+	const stored2 = JSON.parse(
+		dom.window.localStorage.getItem("nova:chat-lounge")
+	);
+	check(
+		"bot replied",
+		stored2.length >= 2 && stored2.some((m) => m.bot),
+		"count=" + stored2.length
+	);
+	check(
+		"bot message rendered",
+		[...doc.querySelectorAll("#messages .m-name")].some((n) =>
+			["NovaBot", "Pixel", "Sage"].some((b) => n.textContent.includes(b))
+		)
+	);
+
+	// switch rooms
+	[...doc.querySelectorAll("#room-list .room-item")]
+		.find((r) => r.textContent.includes("games"))
+		.click();
+	check(
+		"room switch clears view",
+		doc.getElementById("messages").textContent.includes("No messages yet") ||
+			doc.querySelectorAll("#messages .msg").length === 0
+	);
+	check(
+		"room header updates",
+		doc.getElementById("chat-room-name").textContent.includes("games")
+	);
+}
+
+/* ---------------- forums page ---------------- */
+console.log("\n[forums /forums.html]");
+{
+	const dom = loadPage("/forums.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	run(dom, "/js/forums.js");
+	const doc = window.document;
+	check(
+		"no script errors",
+		window.__errors.length === 0,
+		JSON.stringify(window.__errors)
+	);
+	check(
+		"5 categories + all card",
+		doc.querySelectorAll("#cat-grid .cat-card").length === 6
+	);
+	check(
+		"5 seeded threads",
+		doc.querySelectorAll("#threads .thread-row").length === 5
+	);
+	check(
+		"pinned thread sorts first",
+		doc.querySelector("#threads .thread-row h3").textContent.includes("PINNED")
+	);
+
+	// filter by category
+	[...doc.querySelectorAll("#cat-grid .cat-card")]
+		.find((c) => c.textContent.includes("Games"))
+		.click();
+	check(
+		"games category filters threads",
+		doc.querySelectorAll("#threads .thread-row").length === 1
+	);
+
+	// search
+	[...doc.querySelectorAll("#cat-grid .cat-card")][0].click();
+	doc.getElementById("forum-search").value = "lofi beat";
+	doc
+		.getElementById("forum-search")
+		.dispatchEvent(new window.Event("input", { bubbles: true }));
+	check(
+		"search narrows to 1",
+		doc.querySelectorAll("#threads .thread-row").length === 1
+	);
+
+	// open thread + reply
+	doc.getElementById("forum-search").value = "";
+	doc
+		.getElementById("forum-search")
+		.dispatchEvent(new window.Event("input", { bubbles: true }));
+	doc
+		.querySelector("#threads .thread-row")
+		.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+	check(
+		"thread view opens",
+		doc.getElementById("forum-thread-view").style.display !== "none"
+	);
+	const votesBefore = doc.getElementById("vote-thread").textContent;
+	doc.getElementById("vote-thread").click();
+	check(
+		"thread upvote works",
+		doc.getElementById("vote-thread").textContent !== votesBefore
+	);
+
+	doc.getElementById("reply-input").value = "great thread, thanks!";
+	doc.getElementById("reply-btn").click();
+	check(
+		"reply renders",
+		[...doc.querySelectorAll(".post .p-body")].some((p) =>
+			p.textContent.includes("great thread")
+		)
+	);
+	const prof = JSON.parse(dom.window.localStorage.getItem("nova:profile"));
+	check("posts stat bumped", prof.stats.posts === 1);
+
+	// new thread modal
+	doc.getElementById("back-to-list").click();
+	doc.getElementById("new-thread-btn").click();
+	const overlay = doc.querySelector(".modal-overlay");
+	check("new thread modal opens", !!overlay);
+	overlay.querySelector("#nt-title").value = "Test thread from suite";
+	overlay.querySelector("#nt-body").value = "Body of the test thread";
+	overlay.querySelector("#nt-post").click();
+	check(
+		"new thread opens in view",
+		doc.getElementById("forum-thread-view").style.display !== "none" &&
+			doc
+				.getElementById("thread-posts")
+				.textContent.includes("Test thread from suite")
+	);
+	const threads = JSON.parse(dom.window.localStorage.getItem("nova:threads"));
+	check(
+		"thread persisted",
+		threads.some((t) => t.title === "Test thread from suite")
+	);
+}
+
+/* ---------------- AI page ---------------- */
+console.log("\n[ai /ai.html]");
+{
+	const dom = loadPage("/ai.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	run(dom, "/js/ai.js");
+	const doc = window.document;
+	check(
+		"no script errors",
+		window.__errors.length === 0,
+		JSON.stringify(window.__errors)
+	);
+	check(
+		"status pill says local brain",
+		doc.getElementById("ai-status").textContent === "LOCAL BRAIN"
+	);
+	check(
+		"8 suggestion chips",
+		doc.querySelectorAll("#ai-suggest button").length === 8
+	);
+	check(
+		"greeting message rendered",
+		doc.getElementById("ai-messages").textContent.includes("personal assistant")
+	);
+
+	const send = async (text) => {
+		doc.getElementById("ai-input").value = text;
+		doc.getElementById("ai-send").click();
+		await tick(1000); // local brain latency max ~800ms
+	};
+	await send("2+2*3");
+	check(
+		"math works",
+		doc.getElementById("ai-messages").textContent.includes("8")
+	);
+	await send("help");
+	check(
+		"help lists capabilities",
+		doc.getElementById("ai-messages").textContent.includes("play <game>")
+	);
+	check(
+		"help includes action chips",
+		doc.querySelectorAll(".ai-actions button").length >= 2
+	);
+	await send("play smash karts");
+	check(
+		"game finder works",
+		doc.getElementById("ai-messages").textContent.includes("Smash Karts")
+	);
+	await send("flip a coin");
+	check(
+		"coin flip works",
+		/Heads|Tails/.test(doc.getElementById("ai-messages").textContent)
+	);
+	await send("roll a d20");
+	check(
+		"d20 rolls 1-20",
+		/d20… it's \*\*\d+\*\*|d20… it's \d+/.test(
+			doc.getElementById("ai-messages").textContent
+		)
+	);
+	const last = [...doc.querySelectorAll("#ai-messages .m-text")].pop()
+		.textContent;
+	const n = parseInt(last.match(/it's (\d+)/)[1], 10);
+	check("d20 in range", n >= 1 && n <= 20);
+}
+
+/* ---------------- lock screen ---------------- */
+console.log("\n[site lock]");
+{
+	const dom = loadPage("/lock.html?next=/games.html");
+	const { window } = dom;
+	// compute the hash the same way shared.js does
+	const realHash = (() => {
+		let h = 5381;
+		const s = "1234";
+		for (let i = 0; i < s.length; i++)
+			h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+		return "h" + h.toString(36);
+	})();
+	window.localStorage.setItem("nova:lock", JSON.stringify({ hash: realHash }));
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/lock.js");
+	const doc = window.document;
+	check("lock screen shows", doc.getElementById("lock-pass") !== null);
+	// wrong pin
+	doc.getElementById("lock-pass").value = "9999";
+	doc
+		.getElementById("lock-form")
+		.dispatchEvent(
+			new window.Event("submit", { bubbles: true, cancelable: true })
 		);
-	}
+	check(
+		"wrong pin rejected",
+		doc.getElementById("lock-error").textContent.includes("Incorrect")
+	);
+	check(
+		"wrong pin does not navigate",
+		window.__nav.length === 0,
+		"nav events=" + window.__nav.length
+	);
+	// correct pin
+	doc.getElementById("lock-pass").value = "1234";
+	doc
+		.getElementById("lock-form")
+		.dispatchEvent(
+			new window.Event("submit", { bubbles: true, cancelable: true })
+		);
+	check(
+		"correct pin unlocks",
+		window.sessionStorage.getItem("nova:unlocked") === "1"
+	);
+	check(
+		"redirects to next page",
+		window.__nav.length === 1,
+		"nav events=" + window.__nav.length
+	);
+}
+
+/* ---------------- lock gate redirect ---------------- */
+console.log("\n[lock gate]");
+{
+	const dom = loadPage("/games.html");
+	const { window } = dom;
+	const realHash2 = (() => {
+		let h = 5381;
+		const s = "abcd";
+		for (let i = 0; i < s.length; i++)
+			h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+		return "h" + h.toString(36);
+	})();
+	window.localStorage.setItem("nova:lock", JSON.stringify({ hash: realHash2 }));
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	check(
+		"locked site attempts redirect to lock screen",
+		window.__nav.length === 1,
+		"nav events=" + window.__nav.length
+	);
+	// unlocked session skips the gate
+	const dom2 = loadPage("/games.html");
+	dom2.window.localStorage.setItem(
+		"nova:lock",
+		JSON.stringify({ hash: realHash2 })
+	);
+	dom2.window.sessionStorage.setItem("nova:unlocked", "1");
+	run(dom2, "/js/data.js");
+	run(dom2, "/js/shared.js");
+	check(
+		"unlocked session passes the gate",
+		dom2.window.__nav.length === 0,
+		"nav events=" + dom2.window.__nav.length
+	);
 }
 
 /* ---------------- about:blank window ---------------- */

@@ -16,19 +16,7 @@
 	</head>
 
 	<body>
-		<header class="topbar">
-			<a class="brand" href="/">
-				<img src="/favicon.ico" alt="" />
-				Nova<span class="dot">.</span>
-			</a>
-			<nav class="nav">
-				<a href="/">Home</a>
-				<a href="/games.html">Games</a>
-				<a href="/apps.html">Apps</a>
-				<a href="/settings.html" class="active">Settings</a>
-				<a href="/about.html">About</a>
-			</nav>
-		</header>
+		<header class="topbar" data-page="settings"></header>
 
 		<main class="wrap section" style="max-width: 1100px">
 			<h1
@@ -42,6 +30,117 @@
 			</h1>
 
 			<div class="settings-grid">
+				<div class="panel" id="profile">
+					<h3>Your profile</h3>
+					<p class="hint">
+						Your name and avatar show up in chat and forums. Stored on this
+						device only.
+					</p>
+					<div class="field">
+						<label>Display name</label>
+						<input type="text" id="profile-name" maxlength="18" />
+					</div>
+					<div class="field">
+						<label>Avatar</label>
+						<div class="emoji-row" id="pf-avatars"></div>
+					</div>
+					<div class="field">
+						<label>Color</label>
+						<div class="swatch-row" id="pf-grads"></div>
+					</div>
+					<div
+						style="
+							display: flex;
+							gap: 10px;
+							align-items: center;
+							flex-wrap: wrap;
+						"
+					>
+						<button class="btn primary small" id="pf-save">Save profile</button>
+						<span
+							style="font-size: 12.5px; color: var(--muted)"
+							id="pf-stats"
+						></span>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Site lock</h3>
+					<p class="hint">
+						Require a PIN to open Nova on this device — like Interstellar's
+						password protection. The PIN is hashed and stored locally.
+					</p>
+					<div class="field">
+						<label>PIN / password</label>
+						<input
+							type="password"
+							id="lock-pin"
+							placeholder="4+ characters"
+							autocomplete="new-password"
+						/>
+					</div>
+					<div style="display: flex; gap: 10px; flex-wrap: wrap">
+						<button class="btn primary small" id="lock-save">
+							Enable lock
+						</button>
+						<button class="btn small" id="lock-disable" style="display: none">
+							Remove lock
+						</button>
+						<button class="btn small" id="lock-now" style="display: none">
+							Lock now
+						</button>
+					</div>
+				</div>
+
+				<div class="panel" id="ai">
+					<h3>AI connection</h3>
+					<p class="hint">
+						The AI tab works fully offline with its local brain. Paste an API
+						key to upgrade it to a real LLM. Your key is stored only in this
+						browser.
+					</p>
+					<div class="field">
+						<label>Provider</label>
+						<select id="ai-provider">
+							<option value="local">Local brain (offline)</option>
+							<option value="openai">OpenAI (gpt-4o-mini…)</option>
+							<option value="gemini">Google Gemini</option>
+							<option value="custom">Custom (OpenAI-compatible)</option>
+						</select>
+					</div>
+					<div class="field" id="ai-key-row" style="display: none">
+						<label>API key</label>
+						<input
+							type="password"
+							id="ai-key"
+							placeholder="sk-…"
+							autocomplete="off"
+						/>
+					</div>
+					<div class="field" id="ai-model-row" style="display: none">
+						<label>Model (optional)</label>
+						<input
+							type="text"
+							id="ai-model"
+							placeholder="gpt-4o-mini / gemini-2.0-flash"
+						/>
+					</div>
+					<div class="field" id="ai-base-row" style="display: none">
+						<label>Base URL</label>
+						<input
+							type="url"
+							id="ai-base"
+							placeholder="https://api.openai.com/v1"
+						/>
+					</div>
+					<div style="display: flex; gap: 10px">
+						<button class="btn primary small" id="ai-save">Save</button>
+						<button class="btn small" id="ai-test" style="display: none">
+							Test connection
+						</button>
+					</div>
+				</div>
+
 				<div class="panel">
 					<h3>Search engine</h3>
 					<p class="hint">Used by the search bars on every page.</p>
@@ -58,10 +157,8 @@
 						<label>
 							<input type="radio" name="open-mode" value="player" />
 							<span>
-								<span class="t">In-page player</span>
-								<span class="d"
-									>Opens in the built-in player with fullscreen controls.</span
-								>
+								<span class="t">Tabbed player</span>
+								<span class="d">Opens in the built-in multi-tab player.</span>
 							</span>
 						</label>
 						<label>
@@ -144,8 +241,18 @@
 				<div class="panel">
 					<h3>Theme</h3>
 					<p class="hint">
-						Accent color and brightness. Everything saves instantly.
+						Accent color, darkness and overall style. Everything saves
+						instantly.
 					</p>
+					<div class="field">
+						<label>Style</label>
+						<div class="swatch-row">
+							<button class="btn small" data-style="nova">
+								Nova (default)
+							</button>
+							<button class="btn small" data-style="loft">Loft</button>
+						</div>
+					</div>
 					<div class="field">
 						<label>Accent</label>
 						<div class="swatch-row" id="accent-row">

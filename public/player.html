@@ -33,7 +33,7 @@
 			</div>
 			<span class="title" id="pl-title">Loading…</span>
 			<div class="side right">
-				<button class="icon-btn" id="pl-reload" title="Reload">
+				<button class="icon-btn" id="pl-reload" title="Reload tab">
 					<svg viewBox="0 0 24 24">
 						<path
 							d="M17.65 6.35A8 8 0 1 0 19.73 14h-2.08A6 6 0 1 1 12 6a6 6 0 0 1 4.24 1.76L13 11h7V4z"
@@ -50,7 +50,7 @@
 				<button
 					class="icon-btn"
 					id="pl-blank"
-					title="Open in about:blank window"
+					title="Open tab in about:blank window"
 				>
 					<svg viewBox="0 0 24 24">
 						<path
@@ -60,24 +60,35 @@
 				</button>
 			</div>
 		</div>
+		<div class="tabs-bar" id="tabs-bar">
+			<div
+				style="
+					display: flex;
+					align-items: center;
+					gap: 6px;
+					flex: 1;
+					overflow-x: auto;
+					scrollbar-width: none;
+				"
+				id="tabs-list"
+			></div>
+			<form class="tab-add-form" id="tab-add-form">
+				<input
+					id="tab-add-input"
+					type="text"
+					placeholder="+ Add a site to a new tab…"
+					autocomplete="off"
+					spellcheck="false"
+				/>
+				<button class="btn" type="submit">Open</button>
+			</form>
+		</div>
 		<div style="position: relative; flex: 1">
 			<div class="loading-screen" id="pl-loading">
 				<div class="ring"></div>
 				<p>Connecting through the tunnel…</p>
 			</div>
-			<iframe
-				id="pl-frame"
-				class="player-frame"
-				allow="
-					fullscreen;
-					autoplay;
-					clipboard-read;
-					clipboard-write;
-					gamepad;
-					cross-origin-isolated;
-				"
-				allowfullscreen
-			></iframe>
+			<div id="frames" style="position: absolute; inset: 0"></div>
 		</div>
 
 		<script src="/js/data.js"></script>
