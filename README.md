@@ -4,6 +4,14 @@ A games-first web portal built on [Ultraviolet](https://github.com/titaniumnetwo
 
 Nova combines a curated instant-play arcade with a full web proxy and a suite of social + utility tabs — inspired by the best of the scene (Interstellar, Tonic/Otonic and friends), designed to run anywhere Node runs.
 
+## Deploy your own
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Nowow125/Ultraviolet-App)
+
+**Railway:** <https://railway.app/new/template?template=https://github.com/Nowow125/Ultraviolet-App> · **Replit:** import the repo and hit Run · **Docker:** `docker compose up -d`
+
+Full step-by-step for every option (Render, Railway, Replit, Docker, bare Node) in [DEPLOY.md](DEPLOY.md). Websocket-capable host required — static hosts (GitHub Pages, Netlify) won't work.
+
 ## Features
 
 ### Core

@@ -1,0 +1,13 @@
+# Render Blueprint - one-click deploy for Nova.
+# Deploy: https://render.com/deploy?repo=https://github.com/Nowow125/Ultraviolet-App
+services:
+  - type: web
+    name: nova-proxy
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && corepack pnpm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 24.11.0

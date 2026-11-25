@@ -1,13 +1,18 @@
-language = "nix"
-run = ["npm", "start"]
-
-[packager]
-language = "nodejs-npm"
+run = "npm start"
+entrypoint = "src/index.js"
+modules = ["nodejs-24"]
 
 [nix]
 channel = "stable-25_11"
 
-[debugger]
+[deployment]
+deploymentTarget = "cloudrun"
+build = ["sh", "-c", "corepack enable && corepack pnpm install"]
+run = ["sh", "-c", "npm start"]
 
-[unitTest]
-language = "nodejs"
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+[debugger]
+support = false
