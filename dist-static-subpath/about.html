@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>About — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/Ultraviolet-App/favicon.ico" />
+		<link rel="stylesheet" href="/Ultraviolet-App/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar" data-page="about"></header>
+
+		<main class="wrap section">
+			<div class="prose">
+				<h1
+					style="
+						font-family: var(--display);
+						color: var(--text);
+						font-size: clamp(28px, 4.5vw, 40px);
+						margin: 10px 0 8px;
+					"
+				>
+					About Nova
+				</h1>
+				<p>
+					Nova is a web portal that combines an unblocked-game arcade with a
+					full web proxy. It's powered by
+					<a
+						href="https://github.com/titaniumnetwork-dev/Ultraviolet"
+						target="_blank"
+						rel="noreferrer"
+						>Ultraviolet</a
+					>
+					— one of the most established open-source proxies — running on the
+					modern Wisp protocol with the Epoxy transport.
+				</p>
+
+				<h2>How it works</h2>
+				<p>
+					When you search or open a game, the page registers a service worker
+					that intercepts requests for the proxy prefix. Every request to a real
+					site is re-encrypted, sent over a websocket (<code>/wisp/</code>) to
+					this server, and streamed back to you. To the network you're on, it
+					looks like ordinary traffic to one site. Cookies, storage, websockets,
+					and most site features work inside the tunnel because the service
+					worker rewrites them transparently.
+				</p>
+
+				<h2>Playing games</h2>
+				<p>
+					The arcade titles are embedded straight from their publishers, so they
+					run in-place without the proxy — that means full speed and low ping.
+					Anything else on the web (Flash-era sites, other portals, Discord,
+					YouTube) opens through the proxy instead. You can choose where games
+					open — the in-page player or a separate
+					<code>about:blank</code> window — in
+					<a href="/Ultraviolet-App/settings.html">Settings</a>.
+				</p>
+
+				<h2>Staying under the radar</h2>
+				<p>Settings has a few tricks worth knowing:</p>
+				<h3>Tab cloak</h3>
+				<p>
+					Swaps the tab title and favicon to look like Google Classroom, Drive,
+					Docs, Gmail and more. It applies to every page here and to cloaked
+					about:blank windows.
+				</p>
+				<h3>Panic key</h3>
+				<p>
+					Set a key (default <span class="kbd">`</span>) that instantly replaces
+					the page with Google Classroom — or any URL you choose — from anywhere
+					on the site. It only triggers when you're not typing in a text field,
+					so it won't fire while you're searching.
+				</p>
+				<h3>about:blank mode</h3>
+				<p>
+					Opens content in a blank window that keeps no history entry for the
+					game itself. Pop-up blockers can interfere; if it doesn't open, allow
+					pop-ups for this site.
+				</p>
+
+				<h2>FAQ</h2>
+				<h3>Why is a game not loading?</h3>
+				<p>
+					First reload the page — the service worker and websocket need a moment
+					on first launch. If a specific game stays black, its publisher may
+					have dropped embed support; use the home search to open that game's
+					website through the proxy instead.
+				</p>
+				<h3>Does it work on school Chromebooks?</h3>
+				<p>
+					It runs in any modern browser without installing anything. If this
+					whole site is blocked on your network, you'll need a different
+					deployment address — check the
+					<a
+						href="https://github.com/titaniumnetwork-dev"
+						target="_blank"
+						rel="noreferrer"
+						>TitaniumNetwork</a
+					>
+					community for alternatives.
+				</p>
+				<h3>Is anything saved on a server?</h3>
+				<p>
+					No. Favorites, history, settings and custom shortcuts are stored only
+					in your browser's localStorage. You can export or wipe them in
+					Settings at any time.
+				</p>
+
+				<h2>Credits &amp; license</h2>
+				<p>
+					Built on
+					<a
+						href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+						target="_blank"
+						rel="noreferrer"
+						>Ultraviolet-App</a
+					>
+					(GPL-3.0), with
+					<a
+						href="https://github.com/mercuryworkshop/epoxy-transport"
+						target="_blank"
+						rel="noreferrer"
+						>Epoxy</a
+					>
+					and
+					<a
+						href="https://github.com/mercuryworkshop/bare-mux"
+						target="_blank"
+						rel="noreferrer"
+						>bare-mux</a
+					>
+					by Mercury Workshop, and the Wisp protocol by TompHTTP. Game catalog
+					curated from publisher embed endpoints; all game trademarks belong to
+					their respective owners. See <a href="/Ultraviolet-App/credits.html">credits</a> for
+					details.
+				</p>
+			</div>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/Ultraviolet-App/settings.html">Settings</a>
+				<a href="/Ultraviolet-App/games.html">Games</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/Ultraviolet-App/js/data.js"></script>
+		<script src="/Ultraviolet-App/config.js"></script>
+		<script src="/Ultraviolet-App/js/shared.js"></script>
+	</body>
+</html>
