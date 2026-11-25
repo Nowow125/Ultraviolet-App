@@ -43,14 +43,21 @@ function loadPage(path, { runScripts = true } = {}) {
 		BareMuxConnection: class {
 			constructor() {}
 			async getTransport() {
-				return "/epoxy/index.mjs";
+				return null;
 			}
-			async setTransport() {}
+			async setTransport(path, opts) {
+				window.__transportCalls.push({ path, opts });
+			}
 		},
 	};
 	window.__uv$config = { prefix: "/p/", encodeUrl: (u) => `enc(${u})` };
 	window.navigator.serviceWorker = window.navigator.serviceWorker || {};
-	window.navigator.serviceWorker.register = async () => ({});
+	window.__swRegisters = [];
+	window.navigator.serviceWorker.register = async (...args) => {
+		window.__swRegisters.push(args);
+		return {};
+	};
+	window.__transportCalls = [];
 	if (!window.URLSearchParams) window.URLSearchParams = URLSearchParams;
 	window.localStorage.clear();
 	window.__errors = [];
@@ -962,6 +969,64 @@ console.log("\n[lock gate]");
 		"unlocked session passes the gate",
 		dom2.window.__nav.length === 0,
 		"nav events=" + dom2.window.__nav.length
+	);
+}
+
+/* ---------------- wisp backend override ---------------- */
+console.log("\n[wisp backend override]");
+{
+	// default: same-origin wisp
+	const dom = loadPage("/index.html");
+	const { window } = dom;
+	run(dom, "/js/data.js");
+	run(dom, "/js/shared.js");
+	run(dom, "/js/app.js");
+	await dom.window.Nova.initProxy();
+	check(
+		"registers root service worker",
+		window.__swRegisters.length === 1 &&
+			window.__swRegisters[0][0] === "/sw.js",
+		JSON.stringify(window.__swRegisters)
+	);
+	check(
+		"default wisp is same-origin",
+		window.__transportCalls[0].opts[0].wisp === "ws://localhost:8080/wisp/",
+		window.__transportCalls[0].opts[0].wisp
+	);
+
+	// config.js override
+	const dom2 = loadPage("/index.html");
+	dom2.window.NovaConfig = { wispUrl: "wss://cdn-backend.example/wisp/" };
+	run(dom2, "/js/data.js");
+	run(dom2, "/js/shared.js");
+	await dom2.window.Nova.initProxy();
+	check(
+		"NovaConfig.wispUrl drives the transport",
+		dom2.window.__transportCalls[0].opts[0].wisp ===
+			"wss://cdn-backend.example/wisp/",
+		dom2.window.__transportCalls[0].opts[0].wisp
+	);
+
+	// settings override takes priority + normalization (bare host -> /wisp/)
+	const dom3 = loadPage("/index.html");
+	dom3.window.NovaConfig = { wispUrl: "wss://cdn-backend.example/wisp/" };
+	dom3.window.localStorage.setItem(
+		"nova:wispUrl",
+		JSON.stringify("wss://replit-backend.replit.dev")
+	);
+	run(dom3, "/js/data.js");
+	run(dom3, "/js/shared.js");
+	check(
+		"bare backend host normalizes to /wisp/",
+		dom3.window.Nova.getWispUrl() === "wss://replit-backend.replit.dev/wisp/",
+		dom3.window.Nova.getWispUrl()
+	);
+	await dom3.window.Nova.initProxy();
+	check(
+		"saved setting beats config.js",
+		dom3.window.__transportCalls[0].opts[0].wisp ===
+			"wss://replit-backend.replit.dev/wisp/",
+		dom3.window.__transportCalls[0].opts[0].wisp
 	);
 }
 

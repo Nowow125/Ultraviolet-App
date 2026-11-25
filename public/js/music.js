@@ -322,18 +322,16 @@
 		if (!p.snare.length) p.snare = [8];
 		setPattern(p);
 	});
-	document
-		.getElementById("beat-clear")
-		.addEventListener("click", () =>
-			setPattern({
-				kick: [],
-				snare: [],
-				hihat: [],
-				openhat: [],
-				clap: [],
-				bass: [],
-			})
-		);
+	document.getElementById("beat-clear").addEventListener("click", () =>
+		setPattern({
+			kick: [],
+			snare: [],
+			hihat: [],
+			openhat: [],
+			clap: [],
+			bass: [],
+		})
+	);
 
 	buildGrid();
 })();

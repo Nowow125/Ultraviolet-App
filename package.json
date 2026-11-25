@@ -11,7 +11,8 @@
 		"format": "prettier --write .",
 		"lint": "eslint ./src/",
 		"lint:fix": "eslint ./src/ --fix",
-		"test": "node scripts/smoke.test.mjs"
+		"test": "node scripts/smoke.test.mjs",
+		"build:static": "node scripts/build-static.mjs"
 	},
 	"keywords": [
 		"proxy"
