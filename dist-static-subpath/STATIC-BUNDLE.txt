@@ -1,0 +1,2 @@
+Nova static frontend bundle (subpath base: /Ultraviolet-App/).
+Upload these files to your static host (BunnyCDN, GitHub Pages, Netlify, ...). The proxy backend must run separately — set its wisp URL in Settings > Proxy backend or in config.js before uploading. See DEPLOY.md.

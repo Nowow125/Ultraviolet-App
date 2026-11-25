@@ -6,6 +6,31 @@ Nova is a standard Node web server (Express + websockets), so it runs on pretty 
 
 ---
 
+## A2. GitHub Pages (already live!)
+
+The site is deployed and live at:
+
+**https://nowow125.github.io/Ultraviolet-App/**
+
+How it works: the repo's `gh-pages` branch holds the static bundle (built by
+`pnpm build:static -- --base /Ultraviolet-App/ --out dist-static-subpath`),
+and Pages serves it at the `/Ultraviolet-App/` subpath — the build rewrites
+all paths, the proxy prefix and the service-worker scope automatically.
+
+To redeploy after changes:
+```bash
+pnpm build:static:subpath
+cd dist-static-subpath && git init -b gh-pages . && git add -A
+git commit -m "redeploy" && git remote add origin https://github.com/Nowow125/Ultraviolet-App.git
+git push -f origin gh-pages
+```
+
+Everything except typed-URL proxied browsing works without a backend (the
+arcade, music, beat studio, chat, forums, AI, cloaks). For the full proxy,
+run the backend on Replit (section C) and paste its
+`wss://<repl>.replit.dev/wisp/` URL into **Settings → Proxy backend** on the
+live site.
+
 ## A. Render (one click, free tier)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Nowow125/Ultraviolet-App)

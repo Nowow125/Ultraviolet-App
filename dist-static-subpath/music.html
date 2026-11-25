@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Music — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/Ultraviolet-App/favicon.ico" />
+		<link rel="stylesheet" href="/Ultraviolet-App/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar" data-page="music"></header>
+
+		<main class="wrap">
+			<section class="section">
+				<h1
+					style="
+						font-family: var(--display);
+						font-size: clamp(28px, 4.5vw, 40px);
+						margin: 10px 0 4px;
+					"
+				>
+					Music
+				</h1>
+				<p style="color: var(--muted); margin: 0 0 22px; font-size: 14.5px">
+					24/7 radio stations and your favorite streaming apps — plus a beat
+					studio that works fully offline, no account needed.
+				</p>
+
+				<div class="section-head"><h2>Live radio</h2></div>
+				<div class="station-grid" id="station-grid"></div>
+
+				<div class="section-head" style="margin-top: 30px">
+					<h2>Open a streaming app</h2>
+				</div>
+				<div class="app-grid" id="music-links" style="max-width: 560px"></div>
+
+				<div class="section-head" style="margin-top: 34px">
+					<h2>Beat studio</h2>
+					<span class="more">works offline · 6 instruments · presets</span>
+				</div>
+				<div class="beat-panel" id="beat-panel">
+					<div class="transport">
+						<button class="btn primary" id="beat-play">▶ Play</button>
+						<div class="bpm-box">
+							<label for="beat-bpm">BPM</label>
+							<input type="range" id="beat-bpm" min="60" max="180" value="84" />
+							<span
+								id="beat-bpm-val"
+								style="color: var(--text); min-width: 28px"
+								>84</span
+							>
+						</div>
+						<div class="bpm-box">
+							<label for="beat-vol">Vol</label>
+							<input type="range" id="beat-vol" min="0" max="100" value="80" />
+						</div>
+					</div>
+					<div class="seq-grid" id="seq-grid"></div>
+					<div class="pattern-btns">
+						<button class="btn small" data-preset="lofi">Lo-fi preset</button>
+						<button class="btn small" data-preset="house">House preset</button>
+						<button class="btn small" data-preset="trap">Trap preset</button>
+						<button class="btn small" id="beat-random">🎲 Randomize</button>
+						<button class="btn small" id="beat-clear">Clear</button>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/Ultraviolet-App/about.html">About</a>
+				<a href="/Ultraviolet-App/settings.html">Settings</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/Ultraviolet-App/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/Ultraviolet-App/js/data.js"></script>
+		<script src="/Ultraviolet-App/config.js"></script>
+		<script src="/Ultraviolet-App/js/shared.js"></script>
+		<script src="/Ultraviolet-App/js/music.js"></script>
+	</body>
+</html>
