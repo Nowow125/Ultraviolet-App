@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Locked — Nova</title>
+		<link rel="shortcut icon" href="/Ultraviolet-App/favicon.ico" />
+		<link rel="stylesheet" href="/Ultraviolet-App/css/theme.css" />
+	</head>
+
+	<body>
+		<div class="lock-wrap">
+			<div class="lock-card fade-in">
+				<div class="lock-ic">
+					<svg viewBox="0 0 24 24">
+						<path
+							d="M12 1a5 5 0 0 0-5 5v3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 1 1 6 0v3z"
+						/>
+					</svg>
+				</div>
+				<h1>Nova is locked</h1>
+				<p>Enter your PIN to unlock this profile on this device.</p>
+				<form id="lock-form">
+					<div class="field">
+						<input
+							type="password"
+							id="lock-pass"
+							placeholder="PIN / password"
+							autocomplete="current-password"
+							style="text-align: center; font-size: 16px; letter-spacing: 4px"
+						/>
+					</div>
+					<button class="btn primary" type="submit" style="width: 100%">
+						Unlock
+					</button>
+					<div class="lock-error" id="lock-error"></div>
+				</form>
+				<button
+					class="btn small"
+					id="lock-forgot"
+					style="color: var(--muted); margin-top: 10px"
+				>
+					Forgot your PIN?
+				</button>
+			</div>
+		</div>
+
+		<script src="/Ultraviolet-App/js/data.js"></script>
+		<script src="/Ultraviolet-App/config.js"></script>
+		<script src="/Ultraviolet-App/js/shared.js"></script>
+		<script src="/Ultraviolet-App/js/lock.js"></script>
+	</body>
+</html>
