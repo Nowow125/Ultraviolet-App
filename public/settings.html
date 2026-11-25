@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Settings — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar" data-page="settings"></header>
+
+		<main class="wrap section" style="max-width: 1100px">
+			<h1
+				style="
+					font-family: var(--display);
+					font-size: clamp(28px, 4.5vw, 40px);
+					margin: 10px 0 20px;
+				"
+			>
+				Settings
+			</h1>
+
+			<div class="settings-grid">
+				<div class="panel" id="profile">
+					<h3>Your profile</h3>
+					<p class="hint">
+						Your name and avatar show up in chat and forums. Stored on this
+						device only.
+					</p>
+					<div class="field">
+						<label>Display name</label>
+						<input type="text" id="profile-name" maxlength="18" />
+					</div>
+					<div class="field">
+						<label>Avatar</label>
+						<div class="emoji-row" id="pf-avatars"></div>
+					</div>
+					<div class="field">
+						<label>Color</label>
+						<div class="swatch-row" id="pf-grads"></div>
+					</div>
+					<div
+						style="
+							display: flex;
+							gap: 10px;
+							align-items: center;
+							flex-wrap: wrap;
+						"
+					>
+						<button class="btn primary small" id="pf-save">Save profile</button>
+						<span
+							style="font-size: 12.5px; color: var(--muted)"
+							id="pf-stats"
+						></span>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Site lock</h3>
+					<p class="hint">
+						Require a PIN to open Nova on this device — like Interstellar's
+						password protection. The PIN is hashed and stored locally.
+					</p>
+					<div class="field">
+						<label>PIN / password</label>
+						<input
+							type="password"
+							id="lock-pin"
+							placeholder="4+ characters"
+							autocomplete="new-password"
+						/>
+					</div>
+					<div style="display: flex; gap: 10px; flex-wrap: wrap">
+						<button class="btn primary small" id="lock-save">
+							Enable lock
+						</button>
+						<button class="btn small" id="lock-disable" style="display: none">
+							Remove lock
+						</button>
+						<button class="btn small" id="lock-now" style="display: none">
+							Lock now
+						</button>
+					</div>
+				</div>
+
+				<div class="panel" id="ai">
+					<h3>AI connection</h3>
+					<p class="hint">
+						The AI tab works fully offline with its local brain. Paste an API
+						key to upgrade it to a real LLM. Your key is stored only in this
+						browser.
+					</p>
+					<div class="field">
+						<label>Provider</label>
+						<select id="ai-provider">
+							<option value="local">Local brain (offline)</option>
+							<option value="openai">OpenAI (gpt-4o-mini…)</option>
+							<option value="gemini">Google Gemini</option>
+							<option value="custom">Custom (OpenAI-compatible)</option>
+						</select>
+					</div>
+					<div class="field" id="ai-key-row" style="display: none">
+						<label>API key</label>
+						<input
+							type="password"
+							id="ai-key"
+							placeholder="sk-…"
+							autocomplete="off"
+						/>
+					</div>
+					<div class="field" id="ai-model-row" style="display: none">
+						<label>Model (optional)</label>
+						<input
+							type="text"
+							id="ai-model"
+							placeholder="gpt-4o-mini / gemini-2.0-flash"
+						/>
+					</div>
+					<div class="field" id="ai-base-row" style="display: none">
+						<label>Base URL</label>
+						<input
+							type="url"
+							id="ai-base"
+							placeholder="https://api.openai.com/v1"
+						/>
+					</div>
+					<div style="display: flex; gap: 10px">
+						<button class="btn primary small" id="ai-save">Save</button>
+						<button class="btn small" id="ai-test" style="display: none">
+							Test connection
+						</button>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Search engine</h3>
+					<p class="hint">Used by the search bars on every page.</p>
+					<div class="field">
+						<label>Engine</label>
+						<select id="set-engine"></select>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Open mode</h3>
+					<p class="hint">How games and proxied sites launch.</p>
+					<div class="radio-row">
+						<label>
+							<input type="radio" name="open-mode" value="player" />
+							<span>
+								<span class="t">Tabbed player</span>
+								<span class="d">Opens in the built-in multi-tab player.</span>
+							</span>
+						</label>
+						<label>
+							<input type="radio" name="open-mode" value="blank" />
+							<span>
+								<span class="t">about:blank window</span>
+								<span class="d"
+									>Opens in a separate cloaked window outside this tab — hard to
+									trace back.</span
+								>
+							</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="panel" style="grid-column: 1 / -1">
+					<h3>Tab cloak</h3>
+					<p class="hint">
+						Replaces the tab title and favicon so this site looks like
+						schoolwork. Applies instantly.
+					</p>
+					<div class="cloak-grid" id="cloak-grid"></div>
+					<div
+						style="
+							display: grid;
+							grid-template-columns: 1fr 1fr auto;
+							gap: 10px;
+							margin-top: 16px;
+						"
+					>
+						<div class="field" style="margin: 0">
+							<label>Custom title</label>
+							<input
+								type="text"
+								id="cloak-title"
+								placeholder="e.g. Untitled document"
+							/>
+						</div>
+						<div class="field" style="margin: 0">
+							<label>Custom icon URL</label>
+							<input
+								type="url"
+								id="cloak-icon"
+								placeholder="https://…/favicon.png"
+							/>
+						</div>
+						<button class="btn" id="cloak-custom" style="align-self: end">
+							Apply
+						</button>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Panic key</h3>
+					<p class="hint">
+						Press this key anywhere to instantly redirect to a safe site.
+					</p>
+					<div class="field">
+						<label>Key (click to record)</label>
+						<input
+							type="text"
+							id="panic-key"
+							readonly
+							placeholder="Click and press a key…"
+						/>
+					</div>
+					<div class="field">
+						<label>Redirect URL</label>
+						<input
+							type="url"
+							id="panic-url"
+							placeholder="https://classroom.google.com"
+						/>
+					</div>
+					<button class="btn primary small" id="panic-save">
+						Save panic settings
+					</button>
+				</div>
+
+				<div class="panel">
+					<h3>Theme</h3>
+					<p class="hint">
+						Accent color, darkness and overall style. Everything saves
+						instantly.
+					</p>
+					<div class="field">
+						<label>Style</label>
+						<div class="swatch-row">
+							<button class="btn small" data-style="nova">
+								Nova (default)
+							</button>
+							<button class="btn small" data-style="loft">Loft</button>
+						</div>
+					</div>
+					<div class="field">
+						<label>Accent</label>
+						<div class="swatch-row" id="accent-row">
+							<button
+								class="swatch active"
+								data-accent="violet"
+								style="background: #8b5cf6"
+								title="Violet"
+							></button>
+							<button
+								class="swatch"
+								data-accent="cyan"
+								style="background: #22d3ee"
+								title="Cyan"
+							></button>
+							<button
+								class="swatch"
+								data-accent="rose"
+								style="background: #fb7185"
+								title="Rose"
+							></button>
+							<button
+								class="swatch"
+								data-accent="emerald"
+								style="background: #34d399"
+								title="Emerald"
+							></button>
+							<button
+								class="swatch"
+								data-accent="amber"
+								style="background: #fbbf24"
+								title="Amber"
+							></button>
+						</div>
+					</div>
+					<div class="field">
+						<label>Darkness</label>
+						<div class="swatch-row">
+							<button class="btn small" data-dark="1">Standard</button>
+							<button class="btn small" data-dark="2">Midnight</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Your data</h3>
+					<p class="hint">
+						Settings, favorites and history live only in this browser. Export
+						them to move devices.
+					</p>
+					<div style="display: flex; gap: 10px; flex-wrap: wrap">
+						<button class="btn small" id="data-export">Export</button>
+						<label class="btn small" style="cursor: pointer">
+							Import<input
+								type="file"
+								id="data-import"
+								accept="application/json"
+								style="display: none"
+							/>
+						</label>
+						<button
+							class="btn small"
+							id="data-clear"
+							style="color: var(--danger)"
+						>
+							Clear everything
+						</button>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/about.html">About</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/js/data.js"></script>
+		<script src="/js/shared.js"></script>
+		<script src="/js/settings.js"></script>
+	</body>
+</html>
