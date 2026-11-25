@@ -181,6 +181,25 @@
 	});
 	renderAiFields();
 
+	/* ---------- proxy backend ---------- */
+	const wispInput = document.getElementById("wisp-url");
+	wispInput.value = Nova.store.get("wispUrl", "");
+	document.getElementById("wisp-save").addEventListener("click", () => {
+		const value = wispInput.value.trim();
+		if (value) {
+			let url = value;
+			if (!/\/wisp\/?$/.test(url)) url = url.replace(/\/+$/, "") + "/wisp/";
+			if (!/^wss?:\/\//.test(url))
+				url = "wss://" + url.replace(/^https?:\/\//, "");
+			wispInput.value = url;
+			Nova.store.set("wispUrl", url);
+			Nova.toast("Backend saved — used on the next game or search");
+		} else {
+			Nova.store.del("wispUrl");
+			Nova.toast("Backend cleared — using this site's own server");
+		}
+	});
+
 	/* ---------- search engine ---------- */
 	const engineSelect = document.getElementById("set-engine");
 	for (const [id, engine] of Object.entries(NovaData.searchEngines)) {

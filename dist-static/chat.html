@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Chat — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar" data-page="chat"></header>
+
+		<main class="wrap">
+			<section class="section" style="padding-bottom: 8px">
+				<h1
+					style="
+						font-family: var(--display);
+						font-size: clamp(28px, 4.5vw, 40px);
+						margin: 10px 0 4px;
+					"
+				>
+					Chat lounge
+				</h1>
+				<p style="color: var(--muted); margin: 0 0 18px; font-size: 14.5px">
+					Jump into a room and talk. Messages sync live across every Nova tab
+					you have open, and the crew bots keep the vibe alive.
+				</p>
+				<div class="chat-layout">
+					<aside class="chat-side">
+						<h3>Rooms</h3>
+						<div id="room-list"></div>
+					</aside>
+					<div class="chat-main">
+						<div class="chat-head">
+							<strong id="chat-room-name">lounge</strong>
+							<span class="desc" id="chat-room-desc"></span>
+							<span class="badge-local">LOCAL · ON-DEVICE</span>
+						</div>
+						<div class="messages" id="messages"></div>
+						<div class="typing" id="typing"></div>
+						<div class="chat-emoji" id="emoji-bar"></div>
+						<div class="chat-input-row">
+							<input
+								id="chat-input"
+								type="text"
+								placeholder="Message the room…"
+								maxlength="400"
+								autocomplete="off"
+							/>
+							<button class="btn primary" id="chat-send">Send</button>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/about.html">About</a>
+				<a href="/settings.html">Settings</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/js/data.js"></script>
+		<script src="/config.js"></script>
+		<script src="/js/shared.js"></script>
+		<script src="/js/chat.js"></script>
+	</body>
+</html>

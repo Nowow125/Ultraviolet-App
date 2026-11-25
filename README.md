@@ -8,13 +8,14 @@ Nova combines a curated instant-play arcade with a full web proxy and a suite of
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Nowow125/Ultraviolet-App)
 
-**Railway:** <https://railway.app/new/template?template=https://github.com/Nowow125/Ultraviolet-App> · **Replit:** import the repo and hit Run · **Docker:** `docker compose up -d`
+**Railway:** <https://railway.app/new/template?template=https://github.com/Nowow125/Ultraviolet-App> · **Replit:** import the repo and hit Run · **BunnyCDN/any static CDN:** upload the ready-made `dist-static/` bundle + run the backend separately · **Docker:** `docker compose up -d`
 
-Full step-by-step for every option (Render, Railway, Replit, Docker, bare Node) in [DEPLOY.md](DEPLOY.md). Websocket-capable host required — static hosts (GitHub Pages, Netlify) won't work.
+Full step-by-step for every option (Render, Railway, BunnyCDN split, Replit, Docker, bare Node) in [DEPLOY.md](DEPLOY.md). Websocket-capable host required for the backend — static hosts (GitHub Pages, Netlify, Bunny) work for the frontend with the `dist-static/` bundle.
 
 ## Features
 
 ### Core
+
 - **Arcade** — 34 curated browser games (io, shooters, sports, racing, arcade, puzzle, casual) embedded from publisher players, with favorites and play history stored locally.
 - **Full web proxy** — search or paste any address; traffic is tunneled over Wisp websockets through the Ultraviolet service worker.
 - **Tabbed player** — a built-in multi-tab system: keep up to 8 proxied sites/games open at once, switch, reload, fullscreen, or send any tab to a cloaked `about:blank` window.
@@ -27,20 +28,24 @@ Full step-by-step for every option (Render, Railway, Replit, Docker, bare Node) 
 - **Data export/import** — everything lives in `localStorage`; export or wipe it from Settings.
 
 ### Music (`/music.html`)
+
 - Three 24/7 radio stations (lofi study, synthwave, lofi sleep) with inline embeds and "open through proxy" fallbacks.
 - Streaming shortcuts (Spotify, YT Music, SoundCloud, Pandora).
 - **Beat studio** — a full offline WebAudio step sequencer: 6 synthesized instruments (kick, snare, hats, clap, bass), BPM/volume control, playhead, lo-fi/house/trap presets, randomizer. No accounts, no network.
 
 ### Chat (`/chat.html`)
+
 - Discord-style lounges: 4 rooms, emoji quickbar, typing indicators.
 - Realtime sync across every open Nova tab via BroadcastChannel; history persisted per room.
 - The crew bots (NovaBot, Pixel, Sage) keep conversations alive.
 
 ### Forums (`/forums.html`)
+
 - Categories, threads, replies, upvotes, pinning, search and sorting.
 - Seeded starter threads; everything stored on-device and synced across tabs.
 
 ### AI (`/ai.html`)
+
 - **Nova Assistant** — an offline local brain that actually does things: launches games (`play smash karts`), applies cloaks/themes, opens sites through the tunnel, evaluates math, rolls dice, flips coins, picks options, tells jokes, and more.
 - Optional **bring-your-own API key** (OpenAI-compatible, Gemini, or a custom base URL) upgrades it to a real LLM — configured in Settings, key stored locally only.
 
@@ -55,12 +60,12 @@ The server listens on port `8080` by default (`PORT` env to change). Open the si
 
 ### Scripts
 
-| Command        | What it does                       |
-| -------------- | ---------------------------------- |
-| `pnpm start`   | Run the production server          |
-| `pnpm test`    | 109-assertion jsdom smoke suite    |
-| `pnpm lint`    | ESLint the server code             |
-| `pnpm format`  | Prettier everything                |
+| Command       | What it does                    |
+| ------------- | ------------------------------- |
+| `pnpm start`  | Run the production server       |
+| `pnpm test`   | 109-assertion jsdom smoke suite |
+| `pnpm lint`   | ESLint the server code          |
+| `pnpm format` | Prettier everything             |
 
 ## Deployment
 

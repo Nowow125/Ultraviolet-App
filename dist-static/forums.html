@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Forums — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar" data-page="forums"></header>
+
+		<main class="wrap">
+			<section class="section" style="padding-bottom: 8px">
+				<h1
+					style="
+						font-family: var(--display);
+						font-size: clamp(28px, 4.5vw, 40px);
+						margin: 10px 0 4px;
+					"
+				>
+					Community forums
+				</h1>
+				<p style="color: var(--muted); margin: 0 0 18px; font-size: 14.5px">
+					Threads, replies and upvotes — stored on your device and synced across
+					your open tabs. Start a topic, share a record, get help.
+				</p>
+
+				<div id="forum-list-view">
+					<div class="cat-grid" id="cat-grid"></div>
+					<div class="forum-toolbar">
+						<div class="searchbar">
+							<svg class="mag" viewBox="0 0 24 24">
+								<path
+									d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16a6.47 6.47 0 0 0 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.49 4.49 0 0 1 9.5 14z"
+								/>
+							</svg>
+							<input
+								id="forum-search"
+								type="text"
+								placeholder="Search threads…"
+								autocomplete="off"
+								spellcheck="false"
+							/>
+						</div>
+						<select
+							id="forum-sort"
+							style="
+								background: var(--panel-strong);
+								border: 1px solid var(--border);
+								border-radius: 12px;
+								padding: 10px 12px;
+								font-size: 13px;
+								font-weight: 600;
+								outline: none;
+							"
+						>
+							<option value="recent">Latest</option>
+							<option value="top">Top</option>
+						</select>
+						<button class="btn primary" id="new-thread-btn">
+							+ New thread
+						</button>
+					</div>
+					<div id="threads"></div>
+					<div class="empty" id="threads-empty" style="display: none">
+						No threads here yet. Be the first to post something!
+					</div>
+				</div>
+
+				<div id="forum-thread-view" style="display: none">
+					<button class="back-link" id="back-to-list">← All threads</button>
+					<div id="thread-posts"></div>
+					<div class="post" style="padding: 14px">
+						<div style="display: flex; gap: 10px">
+							<input
+								id="reply-input"
+								type="text"
+								placeholder="Write a reply…"
+								maxlength="1000"
+								style="
+									flex: 1;
+									background: var(--bg-soft);
+									border: 1px solid var(--border);
+									border-radius: 12px;
+									padding: 12px 14px;
+									font-size: 14px;
+									outline: none;
+								"
+							/>
+							<button class="btn primary" id="reply-btn">Reply</button>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/about.html">About</a>
+				<a href="/settings.html">Settings</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/js/data.js"></script>
+		<script src="/config.js"></script>
+		<script src="/js/shared.js"></script>
+		<script src="/js/forums.js"></script>
+	</body>
+</html>

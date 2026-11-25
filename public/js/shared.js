@@ -173,18 +173,30 @@ window.Nova = (() => {
 
 	/* ---------- proxy bootstrap ---------- */
 	let initPromise = null;
+	function getWispUrl() {
+		let url = store.get("wispUrl", "");
+		if (!url && window.NovaConfig && window.NovaConfig.wispUrl)
+			url = window.NovaConfig.wispUrl;
+		if (!url) {
+			url =
+				(location.protocol === "https:" ? "wss" : "ws") +
+				"://" +
+				location.host +
+				"/wisp/";
+		}
+		// tolerate pasted backend roots — always end up at .../wisp/
+		if (!/\/wisp\/?$/.test(url)) url = url.replace(/\/+$/, "") + "/wisp/";
+		return url;
+	}
 	async function initProxy() {
 		if (initPromise) return initPromise;
 		initPromise = (async () => {
 			if (!("serviceWorker" in navigator))
 				throw new Error("Service workers unsupported.");
-			await navigator.serviceWorker.register("/uv/sw.js", { scope: "/" });
+			// root-level copy of the UV worker: default scope "/" on any static host
+			await navigator.serviceWorker.register("/sw.js", { scope: "/" });
 			const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-			const wispUrl =
-				(location.protocol === "https:" ? "wss" : "ws") +
-				"://" +
-				location.host +
-				"/wisp/";
+			const wispUrl = getWispUrl();
 			if ((await connection.getTransport()) !== "/epoxy/index.mjs") {
 				await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
 			}
@@ -511,6 +523,7 @@ window.Nova = (() => {
 		pushRecent,
 		searchUrl,
 		initProxy,
+		getWispUrl,
 		proxiedUrl,
 		openBlankWindow,
 		buildBlankHtml,

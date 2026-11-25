@@ -141,6 +141,25 @@
 					</div>
 				</div>
 
+				<div class="panel" id="backend">
+					<h3>Proxy backend</h3>
+					<p class="hint">
+						Leave empty if this site is running on its own server. If you're
+						using a static CDN host (e.g. BunnyCDN), paste the wisp address of a
+						running Nova backend here — e.g.
+						<code style="font-size: 11px">wss://nova.onrender.com/wisp/</code>
+					</p>
+					<div class="field">
+						<label>Wisp URL</label>
+						<input
+							type="url"
+							id="wisp-url"
+							placeholder="wss://your-backend.example/wisp/"
+						/>
+					</div>
+					<button class="btn primary small" id="wisp-save">Save backend</button>
+				</div>
+
 				<div class="panel">
 					<h3>Search engine</h3>
 					<p class="hint">Used by the search bars on every page.</p>
@@ -340,6 +359,7 @@
 		</footer>
 
 		<script src="/js/data.js"></script>
+		<script src="/config.js"></script>
 		<script src="/js/shared.js"></script>
 		<script src="/js/settings.js"></script>
 	</body>

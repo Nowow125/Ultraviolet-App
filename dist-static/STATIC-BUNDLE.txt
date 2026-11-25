@@ -1,0 +1,1 @@
+Nova static frontend bundle. Upload these files to your CDN (e.g. BunnyCDN storage zone). The proxy backend must run separately — set its wisp URL in Settings > Proxy backend or in config.js before uploading. See DEPLOY.md.
