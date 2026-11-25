@@ -1,51 +1,53 @@
 <!doctype html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-		/>
-		<title>Ultraviolet | Error</title>
-		<meta
-			name="description"
-			content="Ultraviolet is a highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers. Unblock sites today!"
-		/>
-		<meta
-			name="theme-color"
-			media="(prefers-color-scheme: dark)"
-			content="#434c5e"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Not found — Nova</title>
 		<meta name="googlebot" content="noindex, nofollow, nosnippet" />
 		<base href="/" />
-		<link rel="shortcut icon" content="favicon.ico" />
-		<link rel="stylesheet" href="index.css" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
 	</head>
 
 	<body>
-		<div class="logo-wrapper left-margin">
-			<h1>Ultraviolet | Error</h1>
-		</div>
-		<div class="desc left-margin">
-			<p>The server could not route your request.</p>
-			<p id="uv-error"></p>
-			<code id="uv-error-code"></code>
-			<button id="uv-register-sw" value="Register service worker">
-				Register ServiceWorker
-			</button>
-		</div>
-		<footer>
-			<a
-				title="License information"
-				href="credits.html"
-				style="margin-left: auto"
-				>Credits</a
+		<header class="topbar">
+			<a class="brand" href="/">
+				<img src="/favicon.ico" alt="" />
+				Nova<span class="dot">.</span>
+			</a>
+		</header>
+		<main class="wrap" style="text-align: center; padding-top: 10vh">
+			<h1
+				style="
+					font-family: var(--display);
+					font-size: clamp(60px, 14vw, 130px);
+					margin: 0;
+					background: linear-gradient(100deg, var(--accent), var(--accent-2));
+					-webkit-background-clip: text;
+					background-clip: text;
+					color: transparent;
+				"
 			>
-			<span>Ultraviolet &copy; TN 2022</span>
-		</footer>
-		<script src="uv/uv.bundle.js"></script>
-		<script src="uv/uv.config.js"></script>
-		<script src="register-sw.js"></script>
-		<script src="error.js"></script>
+				404
+			</h1>
+			<p style="color: var(--muted); font-size: 15px; margin: 8px 0 28px">
+				This page slipped through the tunnel.
+			</p>
+			<div
+				style="
+					display: flex;
+					gap: 12px;
+					justify-content: center;
+					flex-wrap: wrap;
+				"
+			>
+				<a class="btn primary" href="/">Back home</a>
+				<a class="btn" href="/games.html">Browse games</a>
+			</div>
+		</main>
+		<script src="/js/data.js"></script>
+		<script src="/js/shared.js"></script>
 	</body>
 </html>

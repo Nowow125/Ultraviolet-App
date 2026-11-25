@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Settings — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar">
+			<a class="brand" href="/">
+				<img src="/favicon.ico" alt="" />
+				Nova<span class="dot">.</span>
+			</a>
+			<nav class="nav">
+				<a href="/">Home</a>
+				<a href="/games.html">Games</a>
+				<a href="/apps.html">Apps</a>
+				<a href="/settings.html" class="active">Settings</a>
+				<a href="/about.html">About</a>
+			</nav>
+		</header>
+
+		<main class="wrap section" style="max-width: 1100px">
+			<h1
+				style="
+					font-family: var(--display);
+					font-size: clamp(28px, 4.5vw, 40px);
+					margin: 10px 0 20px;
+				"
+			>
+				Settings
+			</h1>
+
+			<div class="settings-grid">
+				<div class="panel">
+					<h3>Search engine</h3>
+					<p class="hint">Used by the search bars on every page.</p>
+					<div class="field">
+						<label>Engine</label>
+						<select id="set-engine"></select>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Open mode</h3>
+					<p class="hint">How games and proxied sites launch.</p>
+					<div class="radio-row">
+						<label>
+							<input type="radio" name="open-mode" value="player" />
+							<span>
+								<span class="t">In-page player</span>
+								<span class="d"
+									>Opens in the built-in player with fullscreen controls.</span
+								>
+							</span>
+						</label>
+						<label>
+							<input type="radio" name="open-mode" value="blank" />
+							<span>
+								<span class="t">about:blank window</span>
+								<span class="d"
+									>Opens in a separate cloaked window outside this tab — hard to
+									trace back.</span
+								>
+							</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="panel" style="grid-column: 1 / -1">
+					<h3>Tab cloak</h3>
+					<p class="hint">
+						Replaces the tab title and favicon so this site looks like
+						schoolwork. Applies instantly.
+					</p>
+					<div class="cloak-grid" id="cloak-grid"></div>
+					<div
+						style="
+							display: grid;
+							grid-template-columns: 1fr 1fr auto;
+							gap: 10px;
+							margin-top: 16px;
+						"
+					>
+						<div class="field" style="margin: 0">
+							<label>Custom title</label>
+							<input
+								type="text"
+								id="cloak-title"
+								placeholder="e.g. Untitled document"
+							/>
+						</div>
+						<div class="field" style="margin: 0">
+							<label>Custom icon URL</label>
+							<input
+								type="url"
+								id="cloak-icon"
+								placeholder="https://…/favicon.png"
+							/>
+						</div>
+						<button class="btn" id="cloak-custom" style="align-self: end">
+							Apply
+						</button>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Panic key</h3>
+					<p class="hint">
+						Press this key anywhere to instantly redirect to a safe site.
+					</p>
+					<div class="field">
+						<label>Key (click to record)</label>
+						<input
+							type="text"
+							id="panic-key"
+							readonly
+							placeholder="Click and press a key…"
+						/>
+					</div>
+					<div class="field">
+						<label>Redirect URL</label>
+						<input
+							type="url"
+							id="panic-url"
+							placeholder="https://classroom.google.com"
+						/>
+					</div>
+					<button class="btn primary small" id="panic-save">
+						Save panic settings
+					</button>
+				</div>
+
+				<div class="panel">
+					<h3>Theme</h3>
+					<p class="hint">
+						Accent color and brightness. Everything saves instantly.
+					</p>
+					<div class="field">
+						<label>Accent</label>
+						<div class="swatch-row" id="accent-row">
+							<button
+								class="swatch active"
+								data-accent="violet"
+								style="background: #8b5cf6"
+								title="Violet"
+							></button>
+							<button
+								class="swatch"
+								data-accent="cyan"
+								style="background: #22d3ee"
+								title="Cyan"
+							></button>
+							<button
+								class="swatch"
+								data-accent="rose"
+								style="background: #fb7185"
+								title="Rose"
+							></button>
+							<button
+								class="swatch"
+								data-accent="emerald"
+								style="background: #34d399"
+								title="Emerald"
+							></button>
+							<button
+								class="swatch"
+								data-accent="amber"
+								style="background: #fbbf24"
+								title="Amber"
+							></button>
+						</div>
+					</div>
+					<div class="field">
+						<label>Darkness</label>
+						<div class="swatch-row">
+							<button class="btn small" data-dark="1">Standard</button>
+							<button class="btn small" data-dark="2">Midnight</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="panel">
+					<h3>Your data</h3>
+					<p class="hint">
+						Settings, favorites and history live only in this browser. Export
+						them to move devices.
+					</p>
+					<div style="display: flex; gap: 10px; flex-wrap: wrap">
+						<button class="btn small" id="data-export">Export</button>
+						<label class="btn small" style="cursor: pointer">
+							Import<input
+								type="file"
+								id="data-import"
+								accept="application/json"
+								style="display: none"
+							/>
+						</label>
+						<button
+							class="btn small"
+							id="data-clear"
+							style="color: var(--danger)"
+						>
+							Clear everything
+						</button>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/about.html">About</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/js/data.js"></script>
+		<script src="/js/shared.js"></script>
+		<script src="/js/settings.js"></script>
+	</body>
+</html>

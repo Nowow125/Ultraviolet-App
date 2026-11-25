@@ -1,31 +1,57 @@
-<p align="center"><img src="https://raw.githubusercontent.com/titaniumnetwork-dev/Ultraviolet-Static/main/public/uv.png" height="200"></p>
+# Nova — game portal & proxy
 
-<h1 align="center">Ultraviolet-App</h1>
+A games-first web portal built on [Ultraviolet](https://github.com/titaniumnetwork-dev/Ultraviolet) (TompHTTP) with the [Wisp](https://github.com/tomphttp/wisp) protocol and the [Epoxy](https://github.com/mercuryworkshop/epoxy-transport) transport.
 
-> [!CAUTION]
-> Please note that this project isn't really maintained anymore before making issues! It has been superseded by [Scramjet](https://github.com/MercuryWorkshop/scramjet). An example application setup can be found [here](https://github.com/MercuryWorkshop/Scramjet-App).
+Nova combines a curated instant-play arcade with a full web proxy, tab cloaking, a panic key, and per-device customization — designed to run anywhere Node runs.
 
-The deployable all-in-one bundle for [Ultraviolet](https://github.com/titaniumnetwork-dev/Ultraviolet), a highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers and more!
+## Features
+
+- **Arcade** — 34 curated browser games (io, shooters, sports, racing, arcade, puzzle, casual) embedded from publisher players, with favorites and play history stored locally.
+- **Full web proxy** — search or paste any address on the home page; traffic is tunneled over Wisp websockets through the Ultraviolet service worker.
+- **In-page player** — proxied sites and games open in a clean player bar with reload/fullscreen and one-click "open in cloaked window".
+- **Tab cloak** — 10 presets (Google Classroom, Drive, Docs, Gmail, Canvas, Khan Academy, …) plus custom title/icon.
+- **Panic key** — instantly redirect to any safe URL from anywhere on the site (defaults to <code>`</code> → Google Classroom).
+- **about:blank mode** — open content in a separate blank window with no history entry.
+- **Themes** — five accent colors and two darkness levels.
+- **App shortcuts** — one-click proxied access to common sites, with user-defined custom shortcuts.
+- **Data export/import** — settings live in `localStorage`; export or wipe them from Settings.
+- **Stealth defaults** — proxy prefix is `/p/` instead of the fingerprintable `/uv/service/`, all branding is self-hosted (no third-party font/icon CDN calls), pages are `noindex`.
+
+## Getting started
+
+```bash
+pnpm install
+pnpm start
+```
+
+The server listens on port `8080` by default (`PORT` env to change). Open the site, pick a game, or search the web from home.
+
+### Scripts
+
+| Command        | What it does                       |
+| -------------- | ---------------------------------- |
+| `pnpm start`   | Run the production server          |
+| `pnpm test`    | jsdom smoke tests for all pages    |
+| `pnpm lint`    | ESLint the server code             |
+| `pnpm format`  | Prettier everything                |
 
 ## Deployment
 
-[![Run on Replit](https://binbashbanana.github.io/deploy-buttons/buttons/remade/replit.svg)](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki/Run-on-Replit)
-[![Deploy on Railway](https://binbashbanana.github.io/deploy-buttons/buttons/remade/railway.svg)](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki/Deploy-on-Railway)
-[![Deploy to Koyeb](https://binbashbanana.github.io/deploy-buttons/buttons/remade/koyeb.svg)](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki/Deploy-to-Koyeb)
+Any Node ≥ 20 host works (Render, Railway, Vercel w/ node runtime, Docker, VPS):
 
-If you are deploying to an alternative service or to a server, refer to [Deploy via terminal](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki/Deploy-via-terminal).
+- `PORT` — listening port (default `8080`).
+- Wisp requires websocket support end-to-end; reverse proxies must pass `Upgrade` headers.
 
-Additional information such as [customizing your frontend](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki/Customizing-your-frontend) can be found on the [wiki](https://github.com/titaniumnetwork-dev/Ultraviolet-App/wiki).
+## How the proxy works
 
-Support and updates can be found in our [Discord Server](discord.gg/unblock).
+`/uv/sw.js` registers a service worker with a root scope. Requests under the configured prefix (`/p/`) are decoded (XOR-encoded URLs), fetched by the server over a Wisp websocket, and streamed back with headers rewritten so cookies, storage, and websockets keep working inside the tunnel. Everything else on the site passes through untouched.
 
-> [!IMPORTANT]  
-> Until deployed on a domain with a valid SSL certificate, Firefox will not be able to load the site. Use chromium for testing on localhost
+## Credits
 
-### HTTP Transport
+- [Ultraviolet](https://github.com/titaniumnetwork-dev/Ultraviolet) & [Ultraviolet-App](https://github.com/titaniumnetwork-dev/Ultraviolet-App) — TitaniumNetwork / TompHTTP (GPL-3.0)
+- [Epoxy transport](https://github.com/mercuryworkshop/epoxy-transport) & [bare-mux](https://github.com/mercuryworkshop/bare-mux) — Mercury Workshop
+- [Wisp protocol](https://github.com/tomphttp/wisp) — TompHTTP
+- Icons — [simple-icons](https://github.com/simple-icons/simple-icons) (CC0), fonts — Inter & Space Grotesk (OFL, self-hosted via Fontsource)
+- Game catalog — publisher embed endpoints; all game trademarks belong to their respective owners.
 
-The example uses [EpoxyTransport](https://github.com/MercuryWorkshop/EpoxyTransport) to fetch proxied data encrypted.
-
-You may also want to use [CurlTransport](https://github.com/MercuryWorkshop/CurlTransport), a different way of fetching encrypted data, or [Bare-Client](https://github.com/MercuryWorkshop/Bare-as-module3), the legacy (unencrypted!) transport.
-
-See the [bare-mux](https://github.com/MercuryWorkshop/bare-mux) documentation for more information.
+See [credits.html](public/credits.html) for full license texts.

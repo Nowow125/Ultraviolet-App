@@ -1,4 +1,5 @@
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { hostname } from "node:os";
 import { createServer } from "node:http";
 import express from "express";
@@ -8,33 +9,52 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const publicPath = join(__dirname, "../public");
+
 const app = express();
+
+// Static assets get long-lived caching; the service worker must be allowed a root scope.
+const staticOptions = {
+	maxAge: "1h",
+	setHeaders(res, path) {
+		if (path.endsWith(".woff2") || path.endsWith(".woff")) {
+			res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+		}
+		if (path.endsWith("sw.js")) {
+			res.setHeader("Service-Worker-Allowed", "/");
+		}
+	},
+};
+
 // Load our publicPath first and prioritize it over UV.
-app.use(express.static("./public"));
+app.use(express.static(publicPath, staticOptions));
 // Load vendor files last.
 // The vendor's uv.config.js won't conflict with our uv.config.js inside the publicPath directory.
-app.use("/uv/", express.static(uvPath));
-app.use("/epoxy/", express.static(epoxyPath));
-app.use("/baremux/", express.static(baremuxPath));
+app.use("/uv/", express.static(uvPath, staticOptions));
+app.use("/epoxy/", express.static(epoxyPath, staticOptions));
+app.use("/baremux/", express.static(baremuxPath, staticOptions));
 
 // Error for everything else
 app.use((req, res) => {
 	res.status(404);
-	res.sendFile("./public/404.html");
+	res.sendFile(join(publicPath, "404.html"));
 });
 
 const server = createServer();
 
 server.on("request", (req, res) => {
+	// CoepReportless avoids breaking cross-origin embeds that don't opt in,
+	// while still allowing the UV service worker to claim a wide scope.
 	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-	res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
 	app(req, res);
 });
 server.on("upgrade", (req, socket, head) => {
 	if (req.url.endsWith("/wisp/")) {
 		wisp.routeRequest(req, socket, head);
 		return;
-	} 
+	}
 	socket.end();
 });
 

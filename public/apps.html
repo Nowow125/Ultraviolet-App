@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<title>Apps — Nova</title>
+		<script>
+			try {
+				var c = JSON.parse(localStorage.getItem("nova:cloak") || "null");
+				if (c && c.title) document.title = c.title;
+			} catch (e) {}
+		</script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/css/theme.css" />
+	</head>
+
+	<body>
+		<header class="topbar">
+			<a class="brand" href="/">
+				<img src="/favicon.ico" alt="" />
+				Nova<span class="dot">.</span>
+			</a>
+			<nav class="nav">
+				<a href="/">Home</a>
+				<a href="/games.html">Games</a>
+				<a href="/apps.html" class="active">Apps</a>
+				<a href="/settings.html">Settings</a>
+				<a href="/about.html">About</a>
+			</nav>
+		</header>
+
+		<main class="wrap">
+			<section class="section">
+				<h1
+					style="
+						font-family: var(--display);
+						font-size: clamp(28px, 4.5vw, 40px);
+						margin: 10px 0 4px;
+					"
+				>
+					App shortcuts
+				</h1>
+				<p style="color: var(--muted); margin: 0 0 24px; font-size: 14.5px">
+					One click opens any site through the encrypted tunnel. Add your own
+					shortcuts below — they're saved on this device.
+				</p>
+				<div id="app-sections"></div>
+			</section>
+
+			<section class="section">
+				<div class="panel" style="max-width: 720px">
+					<h3>Add a shortcut</h3>
+					<p class="hint">
+						Any website works. It opens proxied, inside the tunnel.
+					</p>
+					<form
+						id="custom-app-form"
+						style="
+							display: grid;
+							grid-template-columns: 1fr 2fr auto;
+							gap: 10px;
+						"
+					>
+						<div class="field" style="margin: 0">
+							<label>Name</label>
+							<input
+								type="text"
+								id="custom-name"
+								placeholder="Example"
+								maxlength="24"
+							/>
+						</div>
+						<div class="field" style="margin: 0">
+							<label>URL</label>
+							<input
+								type="url"
+								id="custom-url"
+								placeholder="https://example.com"
+							/>
+						</div>
+						<button
+							class="btn primary"
+							type="submit"
+							style="align-self: end; margin-bottom: 0"
+						>
+							Add
+						</button>
+					</form>
+					<div id="custom-apps" style="margin-top: 18px"></div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="links">
+				<a href="/about.html">About</a>
+				<a href="/settings.html">Settings</a>
+				<a
+					href="https://github.com/titaniumnetwork-dev/Ultraviolet-App"
+					target="_blank"
+					rel="noreferrer"
+					>Ultraviolet</a
+				>
+				<a href="/credits.html">Credits</a>
+			</div>
+			<div><span>Nova &copy; 2026 — built on Ultraviolet</span></div>
+		</footer>
+
+		<script src="/js/data.js"></script>
+		<script src="/js/shared.js"></script>
+		<script src="/js/apps.js"></script>
+	</body>
+</html>
